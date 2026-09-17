@@ -1,11 +1,15 @@
 from pydantic import BaseModel, Field
 
+PERIOD_PATTERN = r"^\d{4}-(0[1-9]|1[0-2])$"
+
 
 class BillRequest(BaseModel):
     account_id: int | None = None
     kwh: float = Field(ge=0)
     peak: bool = False
     persist: bool = True
+    # When set, billing runs the solar-offset pipeline for this account+period.
+    period: str | None = Field(default=None, pattern=PERIOD_PATTERN)
 
 
 class CompareRequest(BaseModel):

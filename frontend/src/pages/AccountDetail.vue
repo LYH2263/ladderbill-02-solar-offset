@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getJSON, postJSON } from '../api'
 import SegmentTable from '../components/SegmentTable.vue'
+import SolarOffsetPanel from '../components/SolarOffsetPanel.vue'
 const route = useRoute()
 const data = ref(null)
 const bill = ref(null)
@@ -27,5 +28,6 @@ const account = computed(() => data.value?.account)
       <p v-if="bill">合计 <strong class="hero-num" style="font-size:1.5rem">¥{{ bill.total }}</strong></p>
       <SegmentTable :rows="bill?.segments || []" />
     </div>
+    <SolarOffsetPanel :account-id="+route.params.id" />
   </div>
 </template>

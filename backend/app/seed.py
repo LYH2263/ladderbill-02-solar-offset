@@ -22,6 +22,23 @@ def init_db():
         result_json TEXT,
         created_at TEXT
     );
+    CREATE TABLE IF NOT EXISTS solar_offsets(
+        id INTEGER PRIMARY KEY,
+        account_id INTEGER NOT NULL,
+        period TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1,
+        offset_kwh REAL NOT NULL,
+        source_note TEXT,
+        entered_by TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        supersedes_id INTEGER,
+        created_at TEXT NOT NULL
+    );
+    -- At most one ACTIVE record per (account, period); old versions stay read-only rows.
+    CREATE UNIQUE INDEX IF NOT EXISTS ux_solar_active
+        ON solar_offsets(account_id, period) WHERE is_active = 1;
+    CREATE INDEX IF NOT EXISTS ix_solar_account
+        ON solar_offsets(account_id, period, version);
     """
     )
     if conn.execute("SELECT COUNT(*) c FROM accounts").fetchone()["c"] == 0:
