@@ -3,6 +3,7 @@ import json
 from app.db import connect
 from app.engines.peak_compare import compare_plain_vs_peak
 from app.engines.tier_progressive import calc_bill
+from app.modules.solar_offset.ddl import DDL as SOLAR_OFFSET_DDL
 
 
 def init_db():
@@ -24,6 +25,7 @@ def init_db():
     );
     """
     )
+    conn.executescript(SOLAR_OFFSET_DDL)
     if conn.execute("SELECT COUNT(*) c FROM accounts").fetchone()["c"] == 0:
         conn.execute(
             "INSERT INTO accounts(name, meter_no, note) VALUES ('张家', 'M-1001', '对照：正常用量')"
